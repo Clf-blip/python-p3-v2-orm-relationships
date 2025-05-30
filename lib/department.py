@@ -87,6 +87,17 @@ class Department:
         # Set the id to None
         self.id = None
 
+    def employees(self):
+        """Return a list of Employee objects linked to this Department instance."""
+        from employee import Employee  # avoid circular import
+        sql = """
+            SELECT *
+            FROM employees
+            WHERE department_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Employee.instance_from_db(row) for row in rows]
+
     @classmethod
     def instance_from_db(cls, row):
         """Return a Department object having the attribute values from the table row."""
